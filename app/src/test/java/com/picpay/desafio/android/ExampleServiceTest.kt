@@ -16,18 +16,17 @@ class ExampleServiceTest {
     private val service = ExampleService(api)
 
     @Test
-    fun exampleTest() {
-        // given
-        val call = mock<Call<List<ContactResponse>>>()
+    suspend fun exampleTest() {
+        val call = mock<Response<List<ContactResponse>>>()
         val expectedUsers = emptyList<ContactResponse>()
 
-        whenever(call.execute()).thenReturn(Response.success(expectedUsers))
-        whenever(api.getUsers()).thenReturn(call)
+        whenever(call).thenReturn(Response.success(expectedUsers))
+        whenever(api.getContactList()).thenReturn(call)
 
         // when
-        val users = service.example()
+        val contacts = service.example()
 
         // then
-        assertEquals(users, expectedUsers)
+        assertEquals(contacts, expectedUsers)
     }
 }

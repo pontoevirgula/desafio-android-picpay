@@ -2,14 +2,16 @@ package com.picpay.desafio.android
 
 import com.picpay.desafio.android.core.remote.api.ContactApi
 import com.picpay.desafio.android.core.model.ContactResponse
+import com.picpay.desafio.android.core.remote.service.MyService
+import retrofit2.Response
 
 class ExampleService(
-    private val service: ContactApi
+    private val api: ContactApi
 ) {
 
-    fun example(): List<ContactResponse> {
-        val users = service.getUsers().execute()
+    suspend fun example():List<ContactResponse> {
+        val contacts = api.getContactList().body()
 
-        return users.body() ?: emptyList()
+        return contacts ?: emptyList()
     }
 }
