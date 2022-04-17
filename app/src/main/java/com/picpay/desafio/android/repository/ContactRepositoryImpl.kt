@@ -6,13 +6,14 @@ import com.picpay.desafio.android.core.model.ContactResponse
 import com.picpay.desafio.android.core.remote.service.MyService
 import retrofit2.Response
 
-class ContactRepositoryImpl(private val db : ContactDB) : IContactRepository {
+class ContactRepositoryImpl(private val db: ContactDB, private val service: MyService) :
+    IContactRepository {
     override suspend fun getContactsFromApi(): Response<List<ContactResponse>> {
-        return MyService.api.getContactList()
+        return service.getService().getContactList()
     }
 
     override suspend fun insert(contact: ContactResponse) {
-       db.getContactDao().insert(contact)
+        db.getContactDao().insert(contact)
     }
 
     override suspend fun deleteContact(contact: ContactResponse) {

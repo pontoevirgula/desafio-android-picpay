@@ -8,8 +8,8 @@ import java.io.Serializable
     tableName = "contact"
 )
 data class ContactResponse(
-    @PrimaryKey val id: String,
-    val img: String,
-    val name: String,
-    val username: String
+    @PrimaryKey val id: String = "",
+    val img: String = "",
+    val name: String = "",
+    val username: String = ""
 ) : Serializable
