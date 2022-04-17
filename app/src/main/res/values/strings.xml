@@ -1,6 +1,13 @@
 <resources>
-    <string name="app_name">PicPay</string>
+    <string name="app_name">Lista de contatos</string>
     <string name="title">Contatos</string>
     <string name="error">Ocorreu um erro. Tente novamente.</string>
+    <string name="error_internet">Erro de conexão</string>
+    <string name="error_system">Falha no sistema.\n Tente novamente mais tarde</string>
+    <string name="empty_list">Lista de contatos vazia</string>
+    <string name="my_favorites">Meus favoritos</string>
+    <string name="undo">DESFAZER</string>
+    <string name="snackbar_favorites_add">foi adicionado aos favoritos</string>
+    <string name="snackbar_favorites_remove">foi removido dos favoritos</string>
 
 </resources>
