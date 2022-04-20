@@ -7,9 +7,10 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.picpay.desafio.android.R
 import com.picpay.desafio.android.core.db.ContactDB
+import com.picpay.desafio.android.core.db.ContactRepositoryDBImpl
 import com.picpay.desafio.android.core.remote.service.MyService
 import com.picpay.desafio.android.databinding.ActivityContactBinding
-import com.picpay.desafio.android.repository.ContactRepositoryImpl
+import com.picpay.desafio.android.core.remote.repository.ContactRepositoryImpl
 import com.picpay.desafio.android.ui.viewmodel.ContactViewModel
 import com.picpay.desafio.android.ui.viewmodel.ViewModelFactory
 
@@ -23,8 +24,9 @@ class ContactActivity : AppCompatActivity() {
         binding = ActivityContactBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val repository = ContactRepositoryImpl(ContactDB(this),MyService)
-        val viewModelProviderFactory = ViewModelFactory(application, repository)
+        val repository = ContactRepositoryImpl(MyService)
+        val repositoryDB = ContactRepositoryDBImpl(ContactDB(this))
+        val viewModelProviderFactory = ViewModelFactory(application, repository,repositoryDB)
         viewModel =
             ViewModelProvider(this, viewModelProviderFactory)[ContactViewModel::class.java]
 

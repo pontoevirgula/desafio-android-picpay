@@ -1,12 +1,9 @@
-package com.picpay.desafio.android.repository
+package com.picpay.desafio.android.core.db
 
 import androidx.lifecycle.LiveData
 import com.picpay.desafio.android.core.model.ContactResponse
-import retrofit2.Response
 
-interface IContactRepository {
-
-    suspend fun getContactsFromApi() : Response<List<ContactResponse>>
+interface IContactRepositoryDB {
 
     suspend fun insert(contact: ContactResponse)
 

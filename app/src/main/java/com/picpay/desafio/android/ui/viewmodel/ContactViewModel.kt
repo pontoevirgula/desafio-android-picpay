@@ -6,38 +6,42 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.picpay.desafio.android.ContactApplication
 import com.picpay.desafio.android.R
+import com.picpay.desafio.android.core.db.IContactRepositoryDB
 import com.picpay.desafio.android.core.model.ContactResponse
 import com.picpay.desafio.android.core.util.Resource
-import com.picpay.desafio.android.repository.IContactRepository
+import com.picpay.desafio.android.core.remote.repository.IContactRepository
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import java.io.IOException
 
 class ContactViewModel(
     app: Application,
-    private val contactRepository: IContactRepository
+    private val contactRepository: IContactRepository,
+    private val contactRepositoryDB: IContactRepositoryDB
 ) : AndroidViewModel(app) {
 
-    val contactLiveData: MutableLiveData<Resource<List<ContactResponse>>> = MutableLiveData()
+    private val _contactLiveData: MutableLiveData<Resource<List<ContactResponse>>> = MutableLiveData()
+    val contactLiveData : LiveData<Resource<List<ContactResponse>>> = _contactLiveData
 
     fun fetchAllContacts() {
         viewModelScope.launch {
-            contactLiveData.postValue(Resource.Loading())
+            _contactLiveData.postValue(Resource.Loading())
             try{
                 if (hasInternet()){
                     val response = contactRepository.getContactsFromApi()
-                    contactLiveData.postValue(handleResponse(response))
+                    _contactLiveData.postValue(handleResponse(response))
                 }else{
-                    contactLiveData.postValue(Resource.Error("${R.string.error_internet}"))
+                    _contactLiveData.postValue(Resource.Error("${R.string.error_internet}"))
                 }
             }catch(t: Throwable){
                 when(t){
-                    is IOException -> contactLiveData.postValue(Resource.Error("${R.string.error_internet}"))
-                    else -> contactLiveData.postValue(Resource.Error("${R.string.error_system}"))
+                    is IOException -> _contactLiveData.postValue(Resource.Error("${R.string.error_internet}"))
+                    else -> _contactLiveData.postValue(Resource.Error("${R.string.error_system}"))
                 }
             }
 
@@ -49,23 +53,23 @@ class ContactViewModel(
             response.body()?.let {
                 return Resource.Success(it)
             } ?: kotlin.run {
-                contactLiveData.postValue(Resource.Error("${R.string.empty_list}"))
+                _contactLiveData.postValue(Resource.Error("${R.string.empty_list}"))
                 return Resource.Error(response.message())
             }
         } else {
-            contactLiveData.postValue(Resource.Error("${R.string.error_system}"))
+            _contactLiveData.postValue(Resource.Error("${R.string.error_system}"))
             return Resource.Error(response.message())
         }
     }
 
     fun saveContact(contact: ContactResponse) = viewModelScope.launch {
-        contactRepository.insert(contact)
+        contactRepositoryDB.insert(contact)
     }
 
-    fun getFavoriteContact() = contactRepository.getFavoriteContacts()
+    fun getFavoriteContact() = contactRepositoryDB.getFavoriteContacts()
 
     fun deleteContact(contact: ContactResponse) = viewModelScope.launch {
-        contactRepository.deleteContact(contact)
+        contactRepositoryDB.deleteContact(contact)
     }
 
     @Suppress("DEPRECATION")
